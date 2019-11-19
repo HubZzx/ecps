@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+         http://www.springframework.org/schema/aop 
+         http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+         
+         <!-- 扫描器：bean可以通过注解被管理 -->
+         <context:component-scan base-package="com.rl.ecps"/>
+         
+         <!-- 数据源 -->
+         <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+         	<property name="driverClassName" value="oracle.jdbc.OracleDriver"></property>
+         	<property name="url" value="jdbc:oracle:thin:@localhost:1521/XE"></property>
+         	<property name="username" value="gx666"></property>
+         	<property name="password" value="gx666"></property>
+         </bean>
+         
+         <!-- 整合mybatis,sqlsession工厂 -->
+         <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+         	<property name="dataSource" ref="dataSource"></property>
+         	<property name="configLocation" value="classpath:sqlMapConfig.xml"></property>
+         </bean>
+         
+         <!-- 数据源相关事务管理器 -->
+         <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+         	<property name="dataSource" ref="dataSource"></property>
+         </bean>
+         
+         <!-- 配置事务管理器通知 -->
+         <tx:advice id="txAdive" transaction-manager="txManager">
+         	<tx:attributes>
+         		<!-- propagation：事务传播特性 
+         			 REQUIRED：支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。 
+					 SUPPORTS：支持当前事务，如果当前没有事务，就以非事务方式执行。 
+					 MANDATORY：支持当前事务，如果当前没有事务，就抛出异常。 
+					 REQUIRES_NEW：新建事务，如果当前存在事务，把当前事务挂起。 
+					 NOT_SUPPORTED：以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。 
+					 NEVER：以非事务方式执行，如果当前存在事务，则抛出异常。 
+					 NESTED：支持当前事务，如果当前事务存在，则执行一个嵌套事务，如果当前没有事务，就新建一个事务。-->
+         		<tx:method name="save*" propagation="REQUIRED"/>
+         		<tx:method name="update*" propagation="REQUIRED"/>
+         		<tx:method name="add*" propagation="REQUIRED"/>
+         		<tx:method name="modify*" propagation="REQUIRED"/>
+         		<tx:method name="audit*" propagation="REQUIRED"/>
+         		<tx:method name="delete*" propagation="REQUIRED"/>
+         		<tx:method name="show*" propagation="REQUIRED"/>
+         		<tx:method name="remove*" propagation="REQUIRED"/>
+         		<!-- read-only:“只读事务”并不是一个强制选项，它只是一个“暗示”，提示数据库驱动程序和数据库系统，
+         						这个事务并不包含更改数据的操作，那么JDBC驱动程序和数据库就有可能根据这种情况对
+         						该事务进行一些特定的优化，比方说不安排相应的数据库锁，以减轻事务对数据库的压力，
+         						毕竟事务也是要消耗数据库的资源的。  -->
+         		<tx:method name="select*" read-only="true"/>
+         		<tx:method name="get*" read-only="true"/>
+         		<tx:method name="list*" read-only="true"/>
+         	</tx:attributes>
+         </tx:advice>
+         
+         <!-- Spring之AOP在XML中的配置 -->
+         <aop:config>
+         	<!-- pointcut切点 -->
+         	<aop:advisor advice-ref="txAdive" pointcut="execution(* com.rl.ecps.service..*.*(..))"/>
+         </aop:config>
+</beans>
