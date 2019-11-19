@@ -85,7 +85,7 @@ public class EbUploadController {
 	
 	
 	
-	//品牌管理ajax请求 返回值是void
+
 	@RequestMapping("/uploadForFck.do")
 	public void uploadForFck(HttpServletRequest request,HttpServletResponse response) throws IOException {
 		//把request转换成复杂request
