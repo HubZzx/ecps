@@ -1,5 +1,6 @@
-/*.classpath
-/*.project
-
-/ecps-core/target/classes/META-INF/MANIFEST.MF
-/ecps-core/target/classes/META-INF/*.MF
+*.project
+*.html
+*.class
+*.MF
+*.classpath
+ecps-core/target

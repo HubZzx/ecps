@@ -29,7 +29,7 @@ public class FMutil {
 		//获得包的模板
 		Template template = config.getTemplate(ftlName);
 		//指定文件输出的路径D:\eclipse-workspace\ecps-parent666\ecps-protal\src\main\webapp\static
-		String path = "D:/eclipse-workspace/ecps-parent666/ecps-protal/src/main/webapp/static";
+		String path = "D:/eclipse-workspace/ecps/ecps-protal/src/main/webapp/static";
 		//定义输出流，注意的必须指定编码
 		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(path+"/"+fileName)),"UTF-8"));
 		//生成模板
